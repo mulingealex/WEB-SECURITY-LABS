@@ -39,16 +39,16 @@ Session identifiers should use cryptographically secure randomness and avoid pre
 
 This WebGoat lesson demonstrates an **Insecure Direct Object Reference (IDOR)** vulnerability, where an application exposes internal object identifiers without proper authorization checks.
 
-![[Pasted image 20260516151347.png]]
+![IDOR authenticate first login](./screenshots/idor-authenticate-first-login.png)
 
 
 The exercise shows how an authenticated user can manipulate object references such as user IDs to access unauthorized resources or data belonging to other users.
 
-![[Pasted image 20260516153338.png]]
+![IDOR hidden profile attributes](./screenshots/idor-hidden-profile-attributes.png)
 
 This step demonstrates how attackers inspect raw HTTP responses to identify hidden data that is not visible on the webpage. Using the browser Developer Tools (`F12 → Network`), we analyzed the server response after clicking **View Profile** and discovered additional attributes exposed in the response body. Although the profile page only displayed basic user information, the raw response revealed hidden attributes such as `role` and `userid`, highlighting how sensitive data can still be exposed to authenticated users through insecure application design.
 
-![[Pasted image 20260516153502.png]]
+![IDOR network response hidden fields](./screenshots/idor-network-response-hidden-fields.png)
 
 This step demonstrates how predictable RESTful URL patterns can expose direct object references. Although the application initially hid the `userid` attribute from the frontend through client-side filtering, the raw server response revealed the identifier during earlier analysis. By understanding the application’s URL structure, we were able to append the discovered user ID to the profile endpoint and access the profile directly using an alternate route:
 
@@ -58,7 +58,7 @@ WebGoat/IDOR/profile/2342384
 
 This highlights how attackers can use exposed identifiers and predictable endpoint patterns to bypass intended application behavior and access resources through insecure direct object references (IDOR).
 
-![[Pasted image 20260516160330.png]]
+![IDOR alternate profile URL](./screenshots/idor-alternate-profile-url.png)
 
 ## Navigating RESTful URL Patterns Through IDOR
 
@@ -78,9 +78,9 @@ Using the previously disclosed `userid` value from the server response, we manua
 
 The modified request successfully returned another user's profile information (`Buffalo Bill`), confirming that the application failed to properly enforce object-level authorization checks.
 
-![[Pasted image 20260516162748.png]]
+![IDOR view other profile request](./screenshots/idor-view-other-profile-request.png)
 
-![[Pasted image 20260516162825.png]]
+![IDOR view other profile success](./screenshots/idor-view-other-profile-success.png)
 
 This step demonstrates how RESTful applications use different HTTP methods to perform different actions on the same endpoint. Initially, the application used a `GET` request to retrieve profile information. To modify another user’s profile, the request method was manually changed to `PUT` using the browser Developer Tools (`F12 → Network → XHR → Edit and Resend`).
 
@@ -90,17 +90,17 @@ The request `Content-Type` was also changed to:
 application/json
 ```
 
-![[Pasted image 20260516172546.png]]
+![IDOR PUT request modification](./screenshots/idor-put-request-modification.png)
 
 to ensure the server correctly interpreted the payload as JSON data.
 
 A custom JSON body was then crafted and attached to the request to modify Buffalo Bill’s profile attributes:
 
-![[Pasted image 20260516172703.png]]
+![IDOR PUT JSON payload](./screenshots/idor-put-json-payload.png)
 
 This demonstrates how attackers can manipulate HTTP methods, object identifiers, and request bodies to exploit insecure object-level authorization (IDOR/BOLA) vulnerabilities in RESTful web applications and APIs.
 
-![[Pasted image 20260516172735.png]]
+![IDOR edit other profile success](./screenshots/idor-edit-other-profile-success.png)
 Successfully modified another user’s profile through a Broken Object Level Authorization (BOLA/IDOR) vulnerability.
 
 3. MISSING FUNCTION LEVEL ACCESS CONTROL
@@ -109,32 +109,32 @@ This lab demonstrates how attackers can discover and access hidden application f
 
 The exercise highlights the difference between simply hiding functionality on the frontend and actually securing it through proper access control mechanisms. It also demonstrates how attackers use browser developer tools and DOM inspection during reconnaissance to uncover sensitive endpoints, administrative functionality, and hidden application features.
 
-![[Pasted image 20260517113816.png]]
+![MFAC hidden menu items discovery](./screenshots/mfac-hidden-menu-items-discovery.png)
 
 Using the browser’s Developer Tools (Inspect Element), the hidden functionality was identified by analyzing the webpage’s HTML structure and navigation components. The investigation focused on the application’s navbar and dropdown menu elements, since hidden administrative functionality is commonly embedded within menus and frontend components.
 
 After expanding the HTML hierarchy inside the Inspector tab, a suspicious element was discovered:
 
-![[Pasted image 20260517114336.png]]
+![MFAC hidden menu item inspector](./screenshots/mfac-hidden-menu-item-inspector.png)
 
 The class name `hidden-menu-item` indicated that the application intentionally contained hidden navigation functionality that was not visible in the normal user interface.
 Further inspection of the nested dropdown menu revealed additional hidden submenu entries:
 
-![[Pasted image 20260517114554.png]]
+![MFAC hidden admin submenu links](./screenshots/mfac-hidden-admin-submenu-links.png)
 
 These hidden links exposed restricted functionality related to user administration and configuration management. Although the menu items were hidden from normal users through frontend controls, they were still present within the HTML DOM and accessible through browser inspection tools.
 
 By inspecting the application’s DOM structure using browser Developer Tools, a hidden administrative navigation component was identified:
 
-![[Pasted image 20260517124126.png]]
+![MFAC hidden admin navigation DOM](./screenshots/mfac-hidden-admin-navigation-dom.png)
 
 The menu was hidden through client-side CSS rules using:
 
-![[Pasted image 20260517124314.png]]
+![MFAC hidden menu CSS rules](./screenshots/mfac-hidden-menu-css-rules.png)
 
 After modifying the CSS property to make the element visible, the hidden “Admin” menu appeared within the application interface. This demonstrated how client-side controls can be bypassed through DOM and CSS manipulation, exposing functionality that developers intended to hide from normal users.
 
-![[Pasted image 20260517124449.png]]
+![MFAC admin menu revealed](./screenshots/mfac-admin-menu-revealed.png)
 
 The exercise highlights why relying on frontend obscurity is insecure, since attackers can freely modify HTML and CSS rendered within the browser. Proper authorization controls must always be enforced on the server side rather than relying on hidden UI elements.
 ##### Hidden Administrative Endpoint Enumeration
@@ -142,7 +142,7 @@ After exposing the hidden administrative menu through DOM and CSS manipulation, 
 
 Using the browser Console and Network tools, the hidden administrative route was identified as:
 
-![[Pasted image 20260517131537.png]]
+![MFAC hidden admin endpoint 415 error](./screenshots/mfac-hidden-admin-endpoint-415-error.png)
 
 The response confirmed that the endpoint was active and reachable, while also exposing detailed Spring MVC framework stack traces and backend request-handling behavior. This demonstrated how attackers can leverage hidden frontend functionality, browser developer tools, and backend error messages to enumerate sensitive application routes and gather reconnaissance information about the underlying technology stack and server-side architecture.
 
@@ -157,23 +157,23 @@ After revealing the hidden “Admin” dropdown, I discovered internal endpoints
 
 Initial interaction with these endpoints using normal browser navigation resulted in HTTP 415 and 404 responses, indicating backend functionality existed but expected different request formats.
 
-![[Pasted image 20260517142102.png]]
+![MFAC unsupported media type error](./screenshots/mfac-unsupported-media-type-error.png)
 
 To further test the endpoint, I manually modified a legitimate GET request into a crafted POST request using the Network tab’s Edit & Resend functionality. I changed:
 
 - HTTP Method: `GET → POST`
-![[Pasted image 20260517142313.png]]
+![MFAC users admin fix POST request](./screenshots/mfac-users-admin-fix-post-request.png)
 
 - Added `Content-Type: application/json`
 - Included a JSON request body containing a username parameter.
 
-![[Pasted image 20260517142354.png]]
+![MFAC POST JSON username request](./screenshots/mfac-post-json-username-request.png)
 
 The manipulated request successfully interacted with the backend API and returned JSON user information for “Jerry”, confirming the existence of improperly exposed administrative functionality and demonstrating how hidden client-side controls can be bypassed through direct request manipulation.
 
 Initially the endpoint returned errors until the request header was changed to:
 
-![[Pasted image 20260517220146.png]]
+![MFAC access control users GET request](./screenshots/mfac-access-control-users-get-request.png)
 This caused the backend to properly parse the request and return JSON user data.
 
 ### Vulnerability Observed
@@ -183,7 +183,7 @@ The API exposed sensitive user information without proper authorization checks, 
 - admin status
 - account hashes
 Example exposed object:
-![[Pasted image 20260517220259.png]]
+![MFAC exposed user admin data](./screenshots/mfac-exposed-user-admin-data.png)
 ## Security Risk 
 The application relied on hidden menu items and client-controlled parameters for access control. Although admin functionality was removed from the UI, the backend endpoints remained accessible. By modifying a simple GET request parameter (`?username=Jerry`), it was possible to impersonate an admin user and access sensitive data such as user hashes. This demonstrates Broken Access Control and Missing Function Level Access Control vulnerabilities.
 ## Lesson Learned 
@@ -195,10 +195,10 @@ This lab demonstrated how insecurely generated or predictable authentication coo
 
 The exercise highlighted the risks of weak session management, predictable cookie generation algorithms, and improper authentication validation. Successful exploitation can allow privilege escalation, session hijacking, or unauthorized account access.
 
-![[Pasted image 20260520035308.png]]
+![Cookie spoofing admin login](./screenshots/cookie-spoofing-admin-login.png)
 
 After logging in as `admin`, the application generated the following authentication cookie:
-![[Pasted image 20260520035417.png]]
+![Cookie spoofing Set-Cookie response](./screenshots/cookie-spoofing-set-cookie-response.png)
 The cookie appeared encoded rather than encrypted
 # Step 1 - Identify Possible Encoding  
 The cookie contained:  
@@ -209,7 +209,7 @@ This matched common Base64 characteristics.
 # Step 2 - Decode the Cookie  
 Using the browser console:
 
-![[Pasted image 20260520035921.png]]
+![Cookie spoofing Base64 decode atob](./screenshots/cookie-spoofing-base64-decode-atob.png)
 
 # Step 3 - Analyze the Decoded Value  
 The decoded output contained only:  
@@ -233,7 +233,7 @@ Reversing the string revealed: admin
 Logging in as `webgoat` produced another cookie.  
 After Base64 decoding:
 
-![[Pasted image 20260520040657.png]]
+![Cookie spoofing webgoat decode atob](./screenshots/cookie-spoofing-webgoat-decode-atob.png)
 
 The ending section 74616f67626577 in hex decoded to text: taogbew reversing it revealed webgoat
 
@@ -287,10 +287,10 @@ Using:
 btoa("65755a74544e655275496d6f74")  
 ```  
 
-![[Pasted image 20260520042154.png]]
+![Cookie spoofing btoa encode](./screenshots/cookie-spoofing-btoa-encode.png)
 
 The final spoofed cookie was generated.
-![[Pasted image 20260520043012.png]]
+![Cookie spoofing Tom authentication success](./screenshots/cookie-spoofing-tom-authentication-success.png)
 
 The `spoof_auth` cookie was modified in:  
   
