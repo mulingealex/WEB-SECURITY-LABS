@@ -9,7 +9,7 @@ WebGoat is an intentionally vulnerable web application for learning web applicat
 | Module | OWASP category | Write-up |
 | ------ | -------------- | -------- |
 | [Broken Access Control](./WebGoat/Broken-Access-Control/WebGoat-Broken-Access-Control.md) | A01:2021 — Broken Access Control | IDOR, session hijacking, missing function-level access control, cookie spoofing |
-| [SQL Injection (Intro)](./WebGoat/SQL-Injection/WebGoat-SQL-Injection.md) | A03:2021 — Injection | DML/DDL/DCL fundamentals, numeric and string SQLi, query chaining, CIA impact |
+| [SQL Injection (Intro)](./WebGoat/Injection-Vulnerabilities/SQL-Injection/WebGoat-SQL-Injection.md) | A03:2021 — Injection | DML/DDL/DCL fundamentals, numeric and string SQLi, query chaining, CIA impact |
 
 ## Topics covered
 
@@ -27,9 +27,10 @@ WEB-SECURITY-LABS/
     ├── Broken-Access-Control/
     │   ├── WebGoat-Broken-Access-Control.md
     │   └── Screenshots/
-    └── SQL-Injection/
-        ├── WebGoat-SQL-Injection.md
-        └── Screenshots/
+    └── Injection-Vulnerabilities/
+        └── SQL-Injection/
+            ├── WebGoat-SQL-Injection.md
+            └── Screenshots/
 ```
 
 Screenshots for each write-up live in that module's `Screenshots/` folder and are referenced with standard GitHub markdown image syntax.
