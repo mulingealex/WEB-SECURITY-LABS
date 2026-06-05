@@ -53,7 +53,7 @@ The vulnerable page contained:
 
 The application hinted that `alert()` and `console.log()` could be used to identify XSS vulnerabilities.
 
-![Shopping cart page with input fields used for reflected XSS testing](./Screenshots/Pasted%20image%20260527123702.png)
+![Shopping cart page with input fields used for reflected XSS testing](./Screenshots/xss-reflected-shopping-cart-inputs.png)
 
 ### Payload Used
 
@@ -66,17 +66,17 @@ The application hinted that `alert()` and `console.log()` could be used to ident
 1. Injected the payload into the vulnerable parameter and submitted the request.
 2. Intercepted the request in **Burp Suite** and confirmed the payload was present in the outgoing request.
 
-![Payload injected into the vulnerable parameter](./Screenshots/Pasted%20image%20260527123847.png)
+![Payload injected into the vulnerable parameter](./Screenshots/xss-reflected-payload-injection.png)
 
-![Request intercepted and analyzed in Burp Suite](./Screenshots/Pasted%20image%20260527123922.png)
+![Request intercepted and analyzed in Burp Suite](./Screenshots/xss-reflected-burp-intercept.png)
 
 3. Forwarded the captured request to **Burp Repeater** for controlled, repeatable testing.
 
-![Request sent to Burp Repeater for manipulation](./Screenshots/Pasted%20image%20260527124103.png)
+![Request sent to Burp Repeater for manipulation](./Screenshots/xss-reflected-burp-repeater.png)
 
 4. Verified that the server reflected the payload and the browser executed it, displaying `alert(1)`.
 
-![Successful reflected XSS — alert dialog confirming script execution](./Screenshots/Pasted%20image%20260527124541.png)
+![Successful reflected XSS — alert dialog confirming script execution](./Screenshots/xss-reflected-alert-success.png)
 
 ### Findings
 
@@ -122,13 +122,13 @@ Before attempting exploitation, the comment field was identified as the primary 
 1. Submitted the payload through the comment form.
 2. Confirmed the application accepted and stored the input.
 
-![Malicious script submitted through the comment form](./Screenshots/Pasted%20image%20260605132139.png)
+![Malicious script submitted through the comment form](./Screenshots/xss-stored-comment-payload.png)
 
 3. Reloaded the page so the stored content was rendered and the embedded JavaScript executed automatically.
 
 4. Opened browser Developer Tools to inspect network requests and responses.
 
-![Network traffic confirming phoneHome execution after page reload](./Screenshots/Pasted%20image%20260605132307.png)
+![Network traffic confirming phoneHome execution after page reload](./Screenshots/xss-stored-network-verification.png)
 
 ### Findings
 
@@ -170,7 +170,7 @@ Using Firefox Developer Tools (**F12**) and the Debugger search functionality (*
 route
 ```
 
-![Searching client-side JavaScript for Backbone route definitions](./Screenshots/Pasted%20image%20260527150353.png)
+![Searching client-side JavaScript for Backbone route definitions](./Screenshots/xss-dom-route-search.png)
 
 ### Findings
 
@@ -194,7 +194,7 @@ start.mvc#test/
 
 which allowed arbitrary attacker-controlled payloads to be appended to the URL fragment.
 
-![Hidden route and unsafe DOM sink identified in client-side code](./Screenshots/Pasted%20image%20260527150604.png)
+![Hidden route and unsafe DOM sink identified in client-side code](./Screenshots/xss-dom-hidden-route.png)
 
 DOM XSS attack path:
 
@@ -238,9 +238,9 @@ Modern browsers often do not execute dynamically injected `<script>` tags when i
 4. Switched to an `<img>` tag with an `onerror` event handler to trigger `webgoat.customjs.phoneHome()`.
 5. Loaded the crafted URL and verified execution in the browser console.
 
-![Event-handler payload loaded via crafted URL fragment](./Screenshots/Pasted%20image%20260527150845.png)
+![Event-handler payload loaded via crafted URL fragment](./Screenshots/xss-dom-event-handler-payload.png)
 
-![Browser console confirming phoneHome invocation](./Screenshots/Pasted%20image%20260527151119.png)
+![Browser console confirming phoneHome invocation](./Screenshots/xss-dom-phonehome-console.png)
 
 ### Verification
 
